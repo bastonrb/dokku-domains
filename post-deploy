@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 
-puts "load nginx.conf from #{conf}"
-
-if ENV["domain"]
-  puts "add #{`dokku config:get node-js-app domain`}"
-else
-  puts "no domain specified, using #{ENV['APP']}.#{ENV['VHOST']}"
+if (ENV["domain"] && File.exists?(conf))
+  
+  conf_content = File.read(conf) 
+  /server_name (.*);/.match(conf_content)
+  new_server_name = "#{ENV['domain']} #{$1}"
+  conf_content.gsub!($1,new_server_name)
+  File.delete(conf)
+  File.open(conf, "w") { |file| file.write conf_content}
 end
