@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
+
 conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 
-if (ENV["domain"] && File.exists?(conf))
-  
+if (ENV["DOMAIN"] && File.exists?(conf))
   conf_content = File.read(conf) 
   /server_name (.*);/.match(conf_content))
-  new_server_name = "#{ENV['domain']} #{$1}"
+  new_server_name = "#{ENV['DOMAIN']} #{$1}"
   conf_content.gsub!($1,new_server_name)
   File.delete(conf)
   File.open(conf, "w") { |file| file.write conf_content}
   `sudo /etc/init.d/nginx reload > /dev/null`  
-  `echo add #{ENV['domain']}`
+  puts "#{ENV["DOMAIN"]} has been added!"
 else
-  `echo no domain specified!`
+  puts "no domain specified!"
 end
 
 
