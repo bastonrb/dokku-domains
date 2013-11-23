@@ -4,9 +4,16 @@ conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 if (ENV["domain"] && File.exists?(conf))
   
   conf_content = File.read(conf) 
-  /server_name (.*);/.match(conf_content)
+  /server_name (.*);/.match(conf_content))
   new_server_name = "#{ENV['domain']} #{$1}"
   conf_content.gsub!($1,new_server_name)
   File.delete(conf)
   File.open(conf, "w") { |file| file.write conf_content}
+  `sudo /etc/init.d/nginx reload > /dev/null`  
+  `echo add #{ENV['domain']}`
+else
+  `echo no domain specified!`
 end
+
+
+  
