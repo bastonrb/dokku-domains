@@ -3,8 +3,8 @@ conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 
 puts "load nginx.conf from #{conf}"
 
-if File.exists? "#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/.domain"
-  puts "add #{domain}"
+if ENV["domain"]
+  puts "add #{`dokku config:get node-js-app domain`}"
 else
   puts "no domain specified, using #{ENV['APP']}.#{ENV['VHOST']}"
 end
