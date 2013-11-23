@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+puts "Domain: #{ENV['DOMAIN']}"
+puts "Root: #{ENV['DOKKU_ROOT']}"
+puts "App: #{ENV['App']}"
 
 conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 
@@ -12,7 +15,8 @@ if (ENV["DOMAIN"] && File.exists?(conf))
   `sudo /etc/init.d/nginx reload > /dev/null`  
   puts "#{ENV["DOMAIN"]} has been added!"
 else
-  puts "no domain specified!"
+  puts "can not find #{conf}" unless File.exists? (conf)
+  puts "no domain specified!" unless ENV['DOMAIN']
 end
 
 
