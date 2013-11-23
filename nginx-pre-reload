@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
+conf ="/home/dokku/node-js-app/nginx.conf"
+env = "sh /home/dokku/node-js-app/ENV"
 
 ENV.each do	|name,value|
  puts "Name: #{name} Value: #{value}"
 end
 
-conf ="#{ENV['DOKKU_ROOT']}/#{ENV['APP']}/nginx.conf"
 
 if (ENV["DOMAIN"] && File.exists?(conf))
   conf_content = File.read(conf) 
