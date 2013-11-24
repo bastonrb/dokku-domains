@@ -1,33 +1,22 @@
 #!/usr/bin/env ruby
-conf ="/home/dokku/node-js-app/nginx.conf"
-env = "sh /home/dokku/node-js-app/ENV"
+conf ="/home/dokku/#{ARGV[0]}/nginx.conf"
+puts "conf=#{conf}"
+domain = `dokku config:get #{ARGV[0]} DOMAIN`
+puts "domain=#{domain}"
 
-puts "get the enviroment"
-ENV.each do	|name,value|
- puts "Name: #{name} Value: #{value}"
+if ( domain && File.exists?(conf))
+ conf_content = File.read(conf) 
+  /server_name (.*);/.match(conf_content)
+  new_server_name = "#{domain} #{$1}"
+ conf_content.gsub!($1,new_server_name)
+ File.delete(conf)
+  File.open(conf, "w") { |file| file.write conf_content}
+  `sudo /etc/init.d/nginx reload > /dev/null`  
+  puts "#{domain} has been added!"
+else
+  puts "can not find #{conf}" unless File.exists? (conf)
+  puts "no domain specified!" unless ENV['DOMAIN']
 end
-
-puts "get the args"
-
-ARGV.each do|a|
-  puts "Argument: #{a}"
-end
-
-puts `dokku config:get #{ARGV[0]} DOMAIN`
-
-#if (ENV["DOMAIN"] && File.exists?(conf))
- # conf_content = File.read(conf) 
-  #/server_name (.*);/.match(conf_content)
-  #new_server_name = "#{ENV['DOMAIN']} #{$1}"
- # conf_content.gsub!($1,new_server_name)
- # File.delete(conf)
-  #File.open(conf, "w") { |file| file.write conf_content}
-  #`sudo /etc/init.d/nginx reload > /dev/null`  
-  #puts "#{ENV["DOMAIN"]} has been added!"
-#else
-  #puts "can not find #{conf}" unless File.exists? (conf)
-  #puts "no domain specified!" unless ENV['DOMAIN']
-#end
 
 
   
