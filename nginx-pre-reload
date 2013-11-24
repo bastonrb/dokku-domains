@@ -13,7 +13,7 @@ ARGV.each do|a|
   puts "Argument: #{a}"
 end
 
-puts `dokku config:get $1 DOMAIN`
+puts `dokku config:get #{ARGV[0]} DOMAIN`
 
 #if (ENV["DOMAIN"] && File.exists?(conf))
  # conf_content = File.read(conf) 
