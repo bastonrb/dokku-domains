@@ -4,7 +4,7 @@ puts "conf=#{conf}"
 domain = `dokku config:get #{ARGV[0]} DOMAIN`
 puts "domain=#{domain}"
 
-if ( domain && File.exists?(conf))
+if ( (domain && !domain.empty?) && File.exists?(conf))
  
  conf_content = File.read(conf) 
  
