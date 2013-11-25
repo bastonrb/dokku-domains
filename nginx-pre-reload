@@ -7,12 +7,11 @@ puts "domain=#{domain}"
 
 if (File.exists?(conf) and !domain.include? "----->")
  
- conf_content = File.read(conf) 
- puts "get nginx.conf contents"
- 
  if File.exists?(domain_conf) 
   puts "#{domain} is already active!"
  else
+  conf_content = File.read(conf) 
+  puts "get nginx.conf contents"
   /server_name (.*);/.match(conf_content)
   new_server_name = "#{domain} #{$1}"
   conf_content.gsub!($1,new_server_name)
