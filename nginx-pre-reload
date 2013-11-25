@@ -1,29 +1,31 @@
 #!/usr/bin/env ruby
 conf ="/home/dokku/#{ARGV[0]}/nginx.conf"
+domain_conf ="/home/dokku/#{ARGV[0]}/.domain"
 puts "conf=#{conf}"
 domain = `dokku config:get #{ARGV[0]} DOMAIN`
 puts "domain=#{domain}"
 
-if ( (domain && !domain.empty?) && File.exists?(conf))
+if (File.exists?(conf) and domain.length > 1)
  
  conf_content = File.read(conf) 
+ puts "get nginx.conf contents"
  
- unless conf_content.include? domain
+ if File.exists?(domain_conf) 
+  puts "#{domain} is already active!"
+ else
   /server_name (.*);/.match(conf_content)
   new_server_name = "#{domain} #{$1}"
- conf_content.gsub!($1,new_server_name)
- File.delete(conf)
+  conf_content.gsub!($1,new_server_name)
+  File.delete(conf)
   File.open(conf, "w") { |file| file.write conf_content}
-  `sudo /etc/init.d/nginx reload > /dev/null`  
   puts "#{domain} has been added!"
-  `dokku config:set #{ARGV[0]} DOMAIN_ACTIVE=true`
- else
-  puts "#{domain} is already active!"
+  File.open(domain_conf, "w") { |file| file.write domain}
+  puts "#{domain} has been added! to .domain"
  end
  
 else
-  puts "can not find #{conf}" unless File.exists? (conf)
-  puts "no domain specified!" unless ENV['DOMAIN']
+  puts "no nginx.conf specified!" unless File.exists? (conf)
+  puts "no domain specified!" unless domain.length > 1
 end
 
 
