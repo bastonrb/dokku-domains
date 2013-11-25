@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 conf ="/home/dokku/#{ARGV[0]}/nginx.conf"
-domain_conf ="/home/dokku/#{ARGV[0]}/.domain"
+domain_conf ="/home/dokku/#{ARGV[0]}/DOMAIN"
 puts "conf=#{conf}"
 domain = `dokku config:get #{ARGV[0]} DOMAIN`
 puts "domain=#{domain}"
 
-if (File.exists?(conf) and domain.length > 1)
+if (File.exists?(conf) and domain)
  
  conf_content = File.read(conf) 
  puts "get nginx.conf contents"
@@ -25,7 +25,7 @@ if (File.exists?(conf) and domain.length > 1)
  
 else
   puts "no nginx.conf specified!" unless File.exists? (conf)
-  puts "no domain specified!" unless domain.length > 1
+  puts "no domain specified!" unless domain
 end
 
 
