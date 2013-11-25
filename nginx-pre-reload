@@ -19,6 +19,8 @@ if (File.exists?(conf) and !domain.include? "----->")
   File.open(conf, "w") { |file| file.write conf_content}
   puts "#{domain} has been added!"
   File.open(domain_conf, "w") { |file| file.write domain}
+  `chmod 777 #{conf}`
+  puts "set correct permissions"
   puts "#{domain} has been added! to .domain"
  end
  
